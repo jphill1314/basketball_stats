@@ -1,0 +1,3915 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0048)https://stats.ncaa.org/game/play_by_play/4869387 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>NCAA Statistics</title>
+    <link href="./ncaa_pbp_files/application-f92896c7e868e7bfc27b407c8cd3f386.css" media="all" rel="stylesheet" type="text/css">
+    <script src="./ncaa_pbp_files/application-7972ce0f26dae59507f1d9057320de65.js.download" type="text/javascript"></script>
+    <meta content="authenticity_token" name="csrf-param">
+<meta content="ArZCf4LNQiDTAbWjmiLBFEmh0rMX5Tijs29fL7flPhU=" name="csrf-token">
+    <style>
+tfoot tr:nth-child(n+2){
+  border: initial;
+  font-weight: initial;
+}
+
+tfoot tr:nth-child(n+2) td{
+  border: initial;
+  font-weight: initial;
+}
+    </style>
+
+  <script>
+
+  $.ajaxSetup ({
+    // Disable caching of AJAX responses
+    cache: false
+  });
+
+  function changeSport(field){
+    var el = $(field);
+    var tmList = el.parent().next().find('.new-team-year')[0];
+    if (tmList == null){
+      tmList = el.nextAll('.new-team-year')[0];
+    }
+    $.ajax({
+      url: "/game_sport_year_ctls/"+el.val()+"/available_teams",
+      dataType: "script",
+      success: function(data, status){
+        $(tmList).empty();
+        $(tmList).append(("<option value=''>Select team</option>"));
+        $.each(JSON.parse(data), function(k, v){
+          $(tmList).append($("<option></option>")
+              .attr("value", v["id"])
+              .text(v["member_org"]["name_tabular"]));
+        });
+        $(tmList).trigger("chosen:updated");
+      }
+    });
+  }
+
+    function set_process_styles(fld, start_color, end_color){
+       $('#'+fld).effect('highlight', {color: '#99CC99'}, 6000);
+    }
+
+    var downImage = "/assets/down12.gif";
+    var rightImage = "/assets/right12.gif";
+
+    function highlight(div_id){
+      $(div_id).effect('highlight', {color: '#99CC99'}, 6000);
+    }
+
+    function show_hide_rows(attr_val, link_id){
+      $('#'+attr_val).toggle();
+      if ($('#'+attr_val).is(':visible')) {
+        $('#'+link_id).attr('src', downImage);
+      }else{
+        $('#'+link_id).attr('src', rightImage);
+      }
+    }
+
+    function mask(label){
+      $('body').mask(label);
+    }
+    function unmask(){
+      $('body').unmask();
+    }
+
+    var winHeight = "auto";
+    var winWidth = "auto";
+    var maxHeight = 700;
+    var maxWidth = 1400;
+    var minHeight = 100;
+    var minWidth = 200;
+    
+    var modalOptions = {"width": winWidth,
+                        "height": winHeight,
+                        "maxHeight": maxHeight,
+                        "maxWidth": maxWidth,
+                        "minHeight": minHeight,
+                        "minWidth": minWidth};
+
+    function dialog(url, title){
+
+      $("#stats_app_dialog").dialog({modal:true, minWidth:minWidth, minHeight:minHeight, maxWidth:maxWidth, maxHeight:maxHeight, width:winWidth, height:winHeight, title:title, closeOnEscape: false});
+    
+      modalOptions.title = title;
+    
+      $("#stats_app_dialog").dialog("option", modalOptions);
+    
+      $("#stats_app_dialog").html("Loading...");
+      $("#stats_app_dialog").load(url).dialog('open');
+    }
+
+    function addDatePicker(){
+    $('.adddatepicker').each(function(i, obj){
+      $(obj).datepicker({ 
+        showOn: 'both', 
+        buttonImage: '/assets/calendar.gif', 
+        buttonImageOnly: true,
+      });
+    });
+    }
+
+   $(document).ready(function() {
+     addDatePicker();
+     $('.chosen-select').chosen({allow_single_deselect: true, search_contains: true, width: '250px'});
+     $('.chosen-select-wide').chosen({allow_single_deselect: true, search_contains: true, width: '400px'});
+   });
+
+   function setClassInputFields(){
+     addDatePicker();
+     $('.chosen-select').chosen({allow_single_deselect: true, search_contains: true, width: '250px'});
+     $('.chosen-select-wide').chosen({allow_single_deselect: true, search_contains: true, width: '400px'});
+   }
+
+  </script></head>
+  
+  
+  <body id="body" onload="if (top != self) { top.location=self.location; }">
+    <div id="header"><img alt="Titlebar_logo" height="81" src="./ncaa_pbp_files/titlebar_logo-d1d40bd2268e265b6a42cacb7bb117e9.jpg" style="float: left" width="104">
+      <h1>
+        <span id="title1">NCAA</span><br>
+        <span id="title2">Statistics</span>
+      </h1>
+
+
+      <div id="nav">
+  <ul>
+     <li id="notactive">
+       <a href="https://stats.ncaa.org/rankings?academic_year=2020&amp;sport_code=MBB"><span>National Rankings</span></a>
+    </li>
+     <li id="notactive">
+       <a href="https://stats.ncaa.org/active_career_leaders/show_summary_from_rankings?academic_year=2020&amp;sport_code=MBB"><span>Active Career Leaders</span></a> 
+    </li>
+    <li id="notactive">
+      <a href="https://stats.ncaa.org/contests/scoreboards"><span>Scoreboard</span></a> 
+    </li>
+    <li id="notactive">
+      <a href="https://stats.ncaa.org/head_coaches"><span>Head Coaches</span></a> 
+    </li>
+    <li id="team_search">
+      <script>
+  $(function() {
+    $( "#org_name" ).autocomplete({
+      source: '/team/search',
+      select: function( event, ui ) {
+        $("#org_id").val(ui.item.vid);
+        $("#id").val(ui.item.vid);
+        $('#sport_btn').click();
+      }
+    });
+  });
+</script>
+
+<span style="display:inline; float:right;">
+  <form accept-charset="UTF-8" action="https://stats.ncaa.org/team/index" id="change_team_form" method="post" onsubmit="mask(&#39;Loading&#39;);" style="display:inline;"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="ArZCf4LNQiDTAbWjmiLBFEmh0rMX5Tijs29fL7flPhU="></div>
+  <div style="display:none;">
+  <input id="sport_btn" name="commit" type="submit" value="Submit">
+  </div>
+    <div id="team_autocomplete" class="ui-widget">
+      <span style="color: #ccc;">Team Search:</span>
+      <input id="org_name" name="org_name" style="width:200px" type="text" class="ui-autocomplete-input" autocomplete="off"><span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+      <input id="org_id" name="org_id" type="hidden">
+    </div>
+</form></span>
+    </li>
+  <li>
+  <a href="http://twitter.com/ncaastats" target="TWITTER"><img alt="Twitter" height="17" src="./ncaa_pbp_files/twitter-6586be4273539dff7a95e70ebdf1a846.png" width="46"></a>
+  </li>
+  </ul>
+</div>
+
+</div>
+
+    <div id="contentarea">
+       <div id="stats_app_dialog" style="display:none;">
+        </div>
+      <div id="message_box" class="game" style="display: none">
+        <span class="message_box_success"></span>
+        <span class="message_box_error"></span>
+      </div>
+      <br>
+
+<br>
+
+
+<table class="mytable" align="center" width="50%">
+
+ <tbody><tr class="grey_heading">
+	<td>&nbsp;</td>
+	<td align="center">1st Half</td>
+	<td align="center">2nd Half</td>
+    <td align="center">Total</td>
+ </tr>
+ <tr>
+  <td>
+    <a href="https://stats.ncaa.org/teams/486729" class="skipMask" target="TEAMS_WIN"> Central Ark. (1-2)</a>
+  </td>
+	<td align="right">42</td>
+	<td align="right">36</td>
+	<td align="right">78</td>
+</tr>
+
+ <tr>
+  <td>
+    <a href="https://stats.ncaa.org/teams/486846" class="skipMask" target="TEAMS_WIN"> Georgetown (2-0)</a>
+  </td>
+	<td align="right" class="&quot;boldtext&quot;">54</td>
+	<td align="right" class="&quot;boldtext&quot;">35</td>
+	<td align="right" class="&quot;boldtext&quot;">89</td>
+</tr>
+
+
+
+</tbody></table>
+
+<table align="center" width="50%">
+</table>
+
+<table align="center" width="50%">
+   <tbody><tr>
+      <td class="boldtext" width="20%">Game Date:</td>
+      <td>
+        11/10/2019 12:00 PM
+      </td>
+   </tr>
+   <tr>
+      <td class="boldtext">Attendance:</td>
+      <td>5,785</td>
+   </tr>
+
+</tbody></table>
+
+
+<table align="center" width="50%">
+   <tbody><tr>
+ 	 <td class="boldtext" width="20%" valign="top">Officials:</td>    
+     <td align="left">
+        Clarence Armstrong
+        <br>
+        Wally Rutecki
+        <br>
+        Earl Walton
+     </td>
+   </tr>
+</tbody></table>
+
+
+
+<br>
+
+<div class="header_menu" style="width: 990px; margin-left: auto; margin-right: auto ;">
+
+<div id="nav_bar" style="">
+  <div id="primary_nav_wrap">
+		<ul class="level1" id="root">
+		  <li>
+		    <a href="https://stats.ncaa.org/game/play_by_play/4869387#" class="skipMask">Box Score</a>
+		    <ul class="level2">
+		 		    <li><a href="https://stats.ncaa.org/game/box_score/4869387?period_no=1">1st Half</a></li>
+		 		    <li><a href="https://stats.ncaa.org/game/box_score/4869387?period_no=2">2nd Half</a></li>
+ 		    <li><a href="https://stats.ncaa.org/game/box_score/4869387">Box Score </a></li>
+		    </ul>
+		  </li>
+		  <li class="sep">|</li>
+ 		  <li>
+			<a href="https://stats.ncaa.org/game/play_by_play/4869387">Play by Play</a>
+		  </li>
+  	      <li class="sep">|</li>
+ 		  <li>
+			<a href="https://stats.ncaa.org/game/period_stats/4869387">Summary by Halves</a>
+		  </li>
+  	 </ul>
+</div>
+</div>
+</div>
+
+<!--
+<table width="75%" align="center">
+	<td nowrap>
+		   <a href="/game/box_score/4869387">Box Score </a>&nbsp;|&nbsp;
+	</td>
+	
+	
+	<td nowrap>
+         Play by Play&nbsp;|&nbsp;
+    </td>
+	<td nowrap>
+		   <a href="/game/period_stats/4869387">Summary by Halves</a>
+    </td>
+	<td width="75%">&nbsp;</td>
+</table>
+-->
+
+
+	<table width="1000px" align="center" class="mytbl">
+    <tbody><tr class="heading">
+       <td width="90%" align="center"><a id="pd1">1st Half</a></td>
+  	  <td align="right">
+	      1
+	      <a href="https://stats.ncaa.org/game/play_by_play/4869387#pd2">2</a>
+      </td>
+   </tr>
+</tbody></table>
+<table width="1000px" class="mytable" align="center">
+   <tbody><tr class="grey_heading">
+	   <td class="boldtext" width="10%" align="center">Time</td>
+	   <td class="boldtext" width="40%" align="center">Central Ark.</td>
+	   <td class="boldtext" width="10%" align="center">Score</td>
+	   <td class="boldtext" width="40%" align="center">Georgetown</td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> game start   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> jumpball startperiod   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> period start   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> jumpball won   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:58:00</td>
+       <td class="smtext"><b>SK Shittu,</b> jumpball lost   </td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:44:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:41:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Team,</b> rebound offensive team  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:39:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt jumpshot 2ndchance  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>James Akinjo,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>James Akinjo,</b> 2pt jumpshot 2ndchance  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:31:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:22:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Mac McClung,</b> 3pt jumpshot 2ndchance  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:18:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:17:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> foul personal   </td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:17:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:15:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Mac McClung,</b> 2pt jumpshot 2ndchance  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:13:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:10:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foul personal shooting;2freethrow  </td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-0</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">0-1</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> freethrow 1of2 2ndchance  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">0-2</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> freethrow 2of2 2ndchance  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:58:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foulon    </td>
+       <td class="smtext " align="center">0-2</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:58:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> freethrow 1of2   made</td>
+       <td class="smtext boldtext" align="center">1-2</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">0-2</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> foul personal shooting;2freethrow  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:57:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-2</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:57:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-2</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:57:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> freethrow 2of2   missed</td>
+       <td class="smtext " align="center">1-2</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:57:00</td>
+       <td class="smtext"><b>SK Shittu,</b> foul personal   </td>
+       <td class="smtext " align="center">1-2</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-2</td>
+	     <td class="smtext"><b>Mac McClung,</b> 2pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:49:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-2</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:49:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">1-4</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt layup 2ndchance;pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:38:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"><b>Mac McClung,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:32:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"><b>Mac McClung,</b> 2pt layup pointsinthepaint  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:29:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution in   </td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt layup 2ndchance;pointsinthepaint  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:29:00</td>
+       <td class="smtext"><b>Team,</b> rebound defensive team  </td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:29:00</td>
+       <td class="smtext"><b>SK Shittu,</b> substitution out   </td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:08:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:59:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"><b>James Akinjo,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:59:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> steal    </td>
+       <td class="smtext " align="center">1-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:55:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt layup fromturnover;pointsinthepaint;fastbreak  made</td>
+       <td class="smtext boldtext" align="center">3-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:55:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> assist    </td>
+       <td class="smtext " align="center">3-4</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:37:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">3-6</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt dunk pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:37:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">3-6</td>
+	     <td class="smtext"><b>James Akinjo,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:27:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 2pt jumpshot   missed</td>
+       <td class="smtext " align="center">3-6</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:24:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">3-6</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:13:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">3-8</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> 2pt layup pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:12:00</td>
+       <td class="smtext"><b>Team,</b> timeout short   </td>
+       <td class="smtext " align="center">3-8</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:50:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">6-8</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:50:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> assist    </td>
+       <td class="smtext " align="center">6-8</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:28:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">6-10</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:28:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">6-10</td>
+	     <td class="smtext"><b>James Akinjo,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:15:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt layup pointsinthepaint;blocked  missed</td>
+       <td class="smtext " align="center">6-10</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:15:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">6-10</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> block    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:14:00</td>
+       <td class="smtext"><b>Team,</b> rebound offensive team  </td>
+       <td class="smtext " align="center">6-10</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:12:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 3pt jumpshot 2ndchance  made</td>
+       <td class="smtext boldtext" align="center">9-10</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:12:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> assist    </td>
+       <td class="smtext " align="center">9-10</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:11:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-10</td>
+	     <td class="smtext"><b>Mac McClung,</b> foul personal shooting;1freethrow  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:11:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> foulon    </td>
+       <td class="smtext " align="center">9-10</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:11:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> freethrow 1of1 2ndchance  missed</td>
+       <td class="smtext " align="center">9-10</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:11:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-10</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:06:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">9-12</td>
+	     <td class="smtext"><b>James Akinjo,</b> 2pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:54:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> turnover lostball   </td>
+       <td class="smtext " align="center">9-12</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-12</td>
+	     <td class="smtext"><b>Mac McClung,</b> steal    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:50:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-12</td>
+	     <td class="smtext"><b>Mac McClung,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:50:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> foul personal shooting;2freethrow  </td>
+       <td class="smtext " align="center">9-12</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">9-13</td>
+	     <td class="smtext"><b>Mac McClung,</b> freethrow 1of2 fastbreak;fromturnover  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">9-14</td>
+	     <td class="smtext"><b>Mac McClung,</b> freethrow 2of2 fastbreak;fromturnover  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:35:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 2pt layup pointsinthepaint  missed</td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:34:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution in   </td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:34:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution out   </td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:34:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> foul personal   </td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:23:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> steal    </td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:23:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:15:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:15:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:15:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:15:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">9-14</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:06:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 2pt jumpshot fromturnover  made</td>
+       <td class="smtext boldtext" align="center">11-14</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">11-16</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt hookshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:26:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">14-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:26:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> assist    </td>
+       <td class="smtext " align="center">14-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:12:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">14-16</td>
+	     <td class="smtext"><b>James Akinjo,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:12:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> steal    </td>
+       <td class="smtext " align="center">14-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:08:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt dunk fromturnover;pointsinthepaint;fastbreak  made</td>
+       <td class="smtext boldtext" align="center">16-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:08:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> assist    </td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Team,</b> timeout short   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Mac McClung,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>James Akinjo,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Terrell Allen,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> turnover travel   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Galen Alexander,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:35:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> turnover badpass   </td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Terrell Allen,</b> steal    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:31:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Terrell Allen,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:31:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> steal    </td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:24:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 3pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:21:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Terrell Allen,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:17:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:13:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> rebound defensive   </td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:07:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt jumpshot blocked  missed</td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> block    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-16</td>
+	     <td class="smtext"><b>Galen Alexander,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:59:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">16-18</td>
+	     <td class="smtext"><b>Terrell Allen,</b> 2pt layup pointsinthepaint;fastbreak  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:53:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 2pt layup pointsinthepaint;blocked  missed</td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> block    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:46:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Galen Alexander,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:43:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Galen Alexander,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:43:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> steal    </td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:39:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 3pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Galen Alexander,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:24:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> rebound defensive   </td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:04:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt jumpshot pointsinthepaint  missed</td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:01:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:52:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:48:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> rebound defensive   </td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:37:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt jumpshot   missed</td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Terrell Allen,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> 2pt layup pointsinthepaint  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-18</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">16-20</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt dunk 2ndchance;pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:13:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:09:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foulon    </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> turnover offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> foul offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> substitution in   </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"><b>SK Shittu,</b> substitution in   </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> substitution out   </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:58:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution out   </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:28:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 3pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:25:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> rebound offensive   </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:24:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> turnover lostball   </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">16-21</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> freethrow 1of2 fromturnover  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:10:00</td>
+       <td class="smtext"><b>SK Shittu,</b> foul personal shooting;2freethrow  </td>
+       <td class="smtext " align="center">16-20</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:10:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution in   </td>
+       <td class="smtext " align="center">16-21</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:10:00</td>
+       <td class="smtext"><b>SK Shittu,</b> substitution out   </td>
+       <td class="smtext " align="center">16-21</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">16-22</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> freethrow 2of2 fromturnover  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:02:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">16-22</td>
+	     <td class="smtext"><b>Galen Alexander,</b> foul personal   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:02:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> foulon    </td>
+       <td class="smtext " align="center">16-22</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:02:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution out   </td>
+       <td class="smtext " align="center">16-22</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:02:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> substitution in   </td>
+       <td class="smtext " align="center">16-22</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:57:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 2pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">18-22</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:49:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> foul personal oneandone  </td>
+       <td class="smtext " align="center">18-22</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:49:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">18-22</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:48:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">18-22</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> freethrow 1of1 fastbreak  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:47:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> rebound defensive   </td>
+       <td class="smtext " align="center">18-22</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:38:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt layup pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">20-22</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:21:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">20-25</td>
+	     <td class="smtext"><b>Galen Alexander,</b> 3pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:21:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">20-25</td>
+	     <td class="smtext"><b>Terrell Allen,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:10:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">23-25</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:10:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> assist    </td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"><b>Galen Alexander,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">23-27</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> freethrow 2of2   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">23-26</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> freethrow 1of2   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> substitution in   </td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution in   </td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> substitution out   </td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> substitution out   </td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> foul personal oneandone  </td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">23-25</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:52:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">23-27</td>
+	     <td class="smtext"><b>Terrell Allen,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:52:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">23-27</td>
+	     <td class="smtext"><b>James Akinjo,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:40:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 2pt layup pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">25-27</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-27</td>
+	     <td class="smtext"><b>Mac McClung,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-27</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-27</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:10:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">25-27</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:06:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-27</td>
+	     <td class="smtext"><b>Mac McClung,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:59:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">25-30</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> 3pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:59:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-30</td>
+	     <td class="smtext"><b>Mac McClung,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:37:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> foul offensive   </td>
+       <td class="smtext " align="center">25-30</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:37:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> turnover offensive   </td>
+       <td class="smtext " align="center">25-30</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:37:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-30</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:37:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:37:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> substitution out   </td>
+       <td class="smtext " align="center">25-30</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:37:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> substitution in   </td>
+       <td class="smtext " align="center">25-30</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">25-33</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> 3pt jumpshot fromturnover  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-33</td>
+	     <td class="smtext"><b>James Akinjo,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:12:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt layup pointsinthepaint;blocked  missed</td>
+       <td class="smtext " align="center">25-33</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:12:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-33</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> block    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:10:00</td>
+       <td class="smtext"><b>Team,</b> rebound offensive team  </td>
+       <td class="smtext " align="center">25-33</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-33</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">25-33</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:04:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot 2ndchance  made</td>
+       <td class="smtext boldtext" align="center">28-33</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:04:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> assist    </td>
+       <td class="smtext " align="center">28-33</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">28-33</td>
+	     <td class="smtext"><b>James Akinjo,</b> 2pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:47:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> rebound defensive   </td>
+       <td class="smtext " align="center">28-33</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:42:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">31-33</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:42:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> assist    </td>
+       <td class="smtext " align="center">31-33</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:24:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">31-35</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> 2pt layup pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:05:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 2pt layup pointsinthepaint;blocked  missed</td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:05:00</td>
+       <td class="smtext"><b>Team,</b> rebound offensive team  </td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> block    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:55:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 3pt jumpshot 2ndchance  missed</td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:52:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:42:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"><b>Mac McClung,</b> 2pt layup pointsinthepaint;blocked  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:42:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> block    </td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:33:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> rebound defensive   </td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:32:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">31-35</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">31-38</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> 3pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">31-38</td>
+	     <td class="smtext"><b>James Akinjo,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:10:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">34-38</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:10:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> assist    </td>
+       <td class="smtext " align="center">34-38</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:02:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-38</td>
+	     <td class="smtext"><b>James Akinjo,</b> turnover badpass   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:02:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> steal    </td>
+       <td class="smtext " align="center">34-38</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:55:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 2pt layup fromturnover;pointsinthepaint  missed</td>
+       <td class="smtext " align="center">34-38</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-38</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> foul personal 2freethrow  </td>
+       <td class="smtext " align="center">34-38</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-38</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">34-39</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> freethrow 1of2 fastbreak  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"><b>Mac McClung,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"><b>Myron Gardner,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> substitution out   </td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution in   </td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> freethrow 2of2 fastbreak  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:54:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> rebound defensive   </td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:49:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:46:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-39</td>
+	     <td class="smtext"><b>Myron Gardner,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:24:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">34-42</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> 3pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:24:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-42</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:08:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> foulon    </td>
+       <td class="smtext " align="center">34-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:08:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> freethrow 1of2   made</td>
+       <td class="smtext boldtext" align="center">35-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:08:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">34-42</td>
+	     <td class="smtext"><b>Myron Gardner,</b> foul personal shooting;2freethrow  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:08:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> freethrow 2of2   made</td>
+       <td class="smtext boldtext" align="center">36-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:57:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">36-42</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> foul offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:57:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foulon    </td>
+       <td class="smtext " align="center">36-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:57:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">36-42</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> turnover offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:44:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">36-42</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:44:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">36-42</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:44:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">36-42</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:44:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">36-42</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:44:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:33:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> freethrow 1of1 fromturnover  made</td>
+       <td class="smtext boldtext" align="center">39-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:33:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt layup fromturnover;pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">38-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:33:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> assist    </td>
+       <td class="smtext " align="center">38-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:33:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">38-42</td>
+	     <td class="smtext"><b>Myron Gardner,</b> foul personal shooting;1freethrow  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:33:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foulon    </td>
+       <td class="smtext " align="center">38-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:20:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-42</td>
+	     <td class="smtext"><b>James Akinjo,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:16:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> rebound defensive   </td>
+       <td class="smtext " align="center">39-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-42</td>
+	     <td class="smtext"><b>James Akinjo,</b> steal    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:05:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> turnover lostball   </td>
+       <td class="smtext " align="center">39-42</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:59:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">39-44</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> 2pt dunk fromturnover;pointsinthepaint;fastbreak  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:59:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-44</td>
+	     <td class="smtext"><b>James Akinjo,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:37:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">39-44</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:33:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-44</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-44</td>
+	     <td class="smtext"><b>Myron Gardner,</b> 2pt layup pointsinthepaint;blocked  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:19:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> block    </td>
+       <td class="smtext " align="center">39-44</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-44</td>
+	     <td class="smtext"><b>Myron Gardner,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">39-46</td>
+	     <td class="smtext"><b>Myron Gardner,</b> 2pt layup pointsinthepaint;2ndchance  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:56:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">39-46</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:53:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-46</td>
+	     <td class="smtext"><b>Team,</b> rebound defensive team  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:53:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution out   </td>
+       <td class="smtext " align="center">39-46</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:53:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> substitution in   </td>
+       <td class="smtext " align="center">39-46</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:45:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">39-49</td>
+	     <td class="smtext"><b>James Akinjo,</b> 3pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:35:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">39-49</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:34:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> substitution in   </td>
+       <td class="smtext " align="center">39-49</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-49</td>
+	     <td class="smtext"><b>Team,</b> rebound defensive team  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:34:00</td>
+       <td class="smtext"><b>Deandre Jones,</b> substitution out   </td>
+       <td class="smtext " align="center">39-49</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-49</td>
+	     <td class="smtext"><b>James Akinjo,</b> 2pt layup pointsinthepaint  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-49</td>
+	     <td class="smtext"><b>Myron Gardner,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:15:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">39-51</td>
+	     <td class="smtext"><b>Myron Gardner,</b> 2pt layup 2ndchance;pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:04:00</td>
+       <td class="smtext"><b>Masai Olowokere,</b> turnover lostball   </td>
+       <td class="smtext " align="center">39-51</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:04:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-51</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> steal    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">39-53</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> 2pt layup fromturnover;pointsinthepaint;fastbreak  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-53</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> substitution in   </td>
+       <td class="smtext " align="center">39-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution out   </td>
+       <td class="smtext " align="center">39-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-54</td>
+	     <td class="smtext"><b>Terrell Allen,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-54</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">39-54</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> freethrow 1of1 fastbreak  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-53</td>
+	     <td class="smtext"><b>Mac McClung,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foul personal 1freethrow  </td>
+       <td class="smtext " align="center">39-53</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-53</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">39-53</td>
+	     <td class="smtext"><b>James Akinjo,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:42:20</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> assist    </td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:42:20</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:10:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Myron Gardner,</b> 2pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:05:60</td>
+       <td class="smtext"><b>Hayden Koval,</b> rebound defensive   </td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:03:10</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> 2pt jumpshot pointsinthepaint  missed</td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> period end confirmed  </td>
+   </tr>
+</tbody></table>
+<br>
+<table width="1000px" align="center" class="mytbl">
+    <tbody><tr class="heading">
+       <td width="90%" align="center"><a id="pd2">2nd Half</a></td>
+  	  <td align="right">
+	      <a href="https://stats.ncaa.org/game/play_by_play/4869387#pd1">1</a>
+	      2
+      </td>
+   </tr>
+</tbody></table>
+<table width="1000px" class="mytable" align="center">
+   <tbody><tr class="grey_heading">
+	   <td class="boldtext" width="10%" align="center">Time</td>
+	   <td class="boldtext" width="40%" align="center">Central Ark.</td>
+	   <td class="boldtext" width="10%" align="center">Score</td>
+	   <td class="boldtext" width="40%" align="center">Georgetown</td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> substitution out   </td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> substitution out   </td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"><b>SK Shittu,</b> substitution in   </td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> substitution in   </td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> period start   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Terrell Allen,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>James Akinjo,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">20:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Myron Gardner,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:40:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:37:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">42-54</td>
+	     <td class="smtext"><b>Mac McClung,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:20:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">42-56</td>
+	     <td class="smtext"><b>Mac McClung,</b> 2pt jumpshot pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:12:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt layup pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">44-56</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:12:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">44-56</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">19:12:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">44-56</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:57:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">44-58</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> 2pt layup pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:57:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">44-58</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:47:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 2pt jumpshot pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">46-58</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:33:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">46-58</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:30:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> rebound defensive   </td>
+       <td class="smtext " align="center">46-58</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:25:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt drivinglayup pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">48-58</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:16:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foul personal shooting;2freethrow  </td>
+       <td class="smtext " align="center">48-58</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">48-58</td>
+	     <td class="smtext"><b>Mac McClung,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">48-58</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">48-58</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">48-59</td>
+	     <td class="smtext"><b>Mac McClung,</b> freethrow 1of2   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">18:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">48-60</td>
+	     <td class="smtext"><b>Mac McClung,</b> freethrow 2of2   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:58:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">50-60</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:42:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">50-62</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt hookshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:42:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">50-62</td>
+	     <td class="smtext"><b>James Akinjo,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:19:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt drivinglayup pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">52-62</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:04:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">52-64</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> 2pt pullupjumpshot pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">17:04:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">52-64</td>
+	     <td class="smtext"><b>James Akinjo,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:51:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">55-64</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:51:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> assist    </td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:46:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"><b>Team,</b> timeout short   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:46:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:39:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"><b>Mac McClung,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:26:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> steal    </td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:26:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> turnover badpass   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:20:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> turnover lostball   </td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:20:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-64</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> steal    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">55-66</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> 2pt dunk fromturnover;pointsinthepaint;fastbreak  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:00:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:00:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foul offensive   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">16:00:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> turnover offensive   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:59:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Mac McClung,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:35:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 3pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:31:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:27:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> turnover offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:27:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> foul offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:27:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foulon    </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:27:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution in   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:27:00</td>
+       <td class="smtext"><b>SK Shittu,</b> substitution out   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:07:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:04:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> rebound offensive   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:03:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 2pt layup 2ndchance;fromturnover;pointsinthepaint;blocked  missed</td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">15:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> block    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:59:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:52:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> substitution out   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:52:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:52:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:52:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Mac McClung,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:52:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> substitution in   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:52:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> foul personal   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:49:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Mac McClung,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:45:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Mac McClung,</b> foul personal   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:45:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foulon    </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:45:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> rebound defensive   </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> freethrow 2of2   made</td>
+       <td class="smtext boldtext" align="center">57-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">56-66</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">56-66</td>
+	     <td class="smtext"><b>Terrell Allen,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">56-66</td>
+	     <td class="smtext"><b>James Akinjo,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">56-66</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> freethrow 1of2   made</td>
+       <td class="smtext boldtext" align="center">56-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> foulon    </td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:19:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">55-66</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> foul personal shooting;2freethrow  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">57-68</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> 2pt dunk pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">14:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Mac McClung,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:51:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> turnover lostball   </td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:51:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Mac McClung,</b> steal    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:39:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Mac McClung,</b> 2pt jumpshot fromturnover  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:36:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> rebound defensive   </td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:25:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> 2pt jumpshot pointsinthepaint  missed</td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Team,</b> rebound defensive team  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Galen Alexander,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Mac McClung,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-68</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:09:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">57-71</td>
+	     <td class="smtext"><b>Galen Alexander,</b> 3pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">13:09:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">57-71</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:59:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt layup pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">59-71</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:46:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">59-73</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> 2pt hookshot pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:46:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">59-73</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:21:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> 2pt layup pointsinthepaint  missed</td>
+       <td class="smtext " align="center">59-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:18:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">59-73</td>
+	     <td class="smtext"><b>Galen Alexander,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">59-73</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> foul offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">59-73</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> turnover offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">12:16:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foulon    </td>
+       <td class="smtext " align="center">59-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:58:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> 3pt jumpshot fromturnover  made</td>
+       <td class="smtext boldtext" align="center">62-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:58:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> assist    </td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:36:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foul personal   </td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution out   </td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution in   </td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> substitution in   </td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:33:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution out   </td>
+       <td class="smtext " align="center">62-73</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">62-75</td>
+	     <td class="smtext"><b>Galen Alexander,</b> 2pt layup 2ndchance;pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">62-75</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:10:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt jumpshot   missed</td>
+       <td class="smtext " align="center">62-75</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">62-75</td>
+	     <td class="smtext"><b>Terrell Allen,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">11:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">62-77</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> 2pt pullupjumpshot pointsinthepaint;fastbreak  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:49:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">64-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:49:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> assist    </td>
+       <td class="smtext " align="center">64-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">64-77</td>
+	     <td class="smtext"><b>Galen Alexander,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:31:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> rebound defensive   </td>
+       <td class="smtext " align="center">64-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">64-77</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> foul personal   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">10:05:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foulon    </td>
+       <td class="smtext " align="center">64-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:58:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot   made</td>
+       <td class="smtext boldtext" align="center">67-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:58:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> assist    </td>
+       <td class="smtext " align="center">67-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:36:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-77</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:33:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> rebound defensive   </td>
+       <td class="smtext " align="center">67-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:24:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt jumpshot pointsinthepaint  missed</td>
+       <td class="smtext " align="center">67-77</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:22:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-77</td>
+	     <td class="smtext"><b>Galen Alexander,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">09:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">67-79</td>
+	     <td class="smtext"><b>Terrell Allen,</b> 2pt pullupjumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:52:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">67-79</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:49:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-79</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">67-80</td>
+	     <td class="smtext"><b>Galen Alexander,</b> freethrow 1of2   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Terrell Allen,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>James Akinjo,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> substitution out   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> substitution out   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-79</td>
+	     <td class="smtext"><b>Galen Alexander,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> foul personal shooting;2freethrow  </td>
+       <td class="smtext " align="center">67-79</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution out   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> rebound defensive   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Galen Alexander,</b> freethrow 2of2   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution in   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> substitution in   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:35:00</td>
+       <td class="smtext"><b>SK Shittu,</b> substitution in   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:23:00</td>
+       <td class="smtext"><b>SK Shittu,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:15:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> rebound offensive   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:14:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> 2pt jumpshot 2ndchance;pointsinthepaint  missed</td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:11:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Galen Alexander,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:10:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">08:10:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> steal    </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:31:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> 3pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:31:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Team,</b> rebound defensivedeadball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:31:00</td>
+       <td class="smtext"><b>Team,</b> turnover shotclock   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:31:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"><b>SK Shittu,</b> substitution out   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"><b>Aaron Weidenaar,</b> substitution out   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> substitution in   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Myron Gardner,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Josh LeBlanc,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Galen Alexander,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:30:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution in   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>James Akinjo,</b> 3pt jumpshot fromturnover  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">07:03:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> rebound defensive   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:57:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:44:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Myron Gardner,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:41:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> rebound defensive   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Mac McClung,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:34:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> foulon    </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:34:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> foul personal   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:27:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">06:23:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Mac McClung,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:58:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> block    </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:58:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>James Akinjo,</b> 2pt layup pointsinthepaint;blocked  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:50:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> rebound defensive   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:34:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt jumpshot   missed</td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:31:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:24:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Mac McClung,</b> 3pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foul personal   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution in   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> substitution in   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution out   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:23:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution out   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:18:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> foul personal oneandone  </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:18:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:18:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> freethrow 1of1 2ndchance  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:16:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> rebound defensive   </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Myron Gardner,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"><b>Myron Gardner,</b> foul personal shooting;2freethrow  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>James Akinjo,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Mac McClung,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> freethrow 1of2   made</td>
+       <td class="smtext boldtext" align="center">68-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> foulon    </td>
+       <td class="smtext " align="center">67-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:07:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Terrell Allen,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:06:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> freethrow 2of2   missed</td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">05:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> 2pt jumpshot   missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:46:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-80</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound offensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:45:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-82</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:45:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">68-82</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> 2pt layup 2ndchance;pointsinthepaint  made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:31:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">68-82</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-82</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:29:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> foul personal oneandone  </td>
+       <td class="smtext " align="center">68-82</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-82</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:29:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">68-82</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> freethrow 1of1 fastbreak  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:29:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> rebound defensive   </td>
+       <td class="smtext " align="center">68-82</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">04:10:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> 2pt layup pointsinthepaint  made</td>
+       <td class="smtext boldtext" align="center">70-82</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">70-85</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> assist    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:50:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">70-85</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> 3pt stepbackjumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:27:00</td>
+       <td class="smtext"><b>Hayden Koval,</b> 2pt jumpshot   missed</td>
+       <td class="smtext " align="center">70-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:24:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution in   </td>
+       <td class="smtext " align="center">70-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:24:00</td>
+       <td class="smtext"><b>Team,</b> rebound offensive team  </td>
+       <td class="smtext " align="center">70-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:24:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> timeout commercial   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:24:00</td>
+       <td class="smtext"><b>Collin Cooper,</b> substitution out   </td>
+       <td class="smtext " align="center">70-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:18:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> foulon    </td>
+       <td class="smtext " align="center">70-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:18:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">70-85</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> foul personal oneandone  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:18:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> freethrow 1of2 2ndchance  made</td>
+       <td class="smtext boldtext" align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:17:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> freethrow 2of2 2ndchance  missed</td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:16:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:03:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> 2pt layup pointsinthepaint  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">03:00:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> rebound defensive   </td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:53:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> turnover dribbling   </td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:53:00</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution in   </td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:53:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution out   </td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:39:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"><b>Jamorko Pickett,</b> 2pt jumpshot fromturnover  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:36:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> rebound defensive   </td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:30:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 2pt layup pointsinthepaint  missed</td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:25:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:18:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> steal    </td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:18:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">71-85</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:12:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> 2pt jumpshot fromturnover;fastbreak  made</td>
+       <td class="smtext boldtext" align="center">73-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:12:00</td>
+       <td class="smtext"><b>Jaxson Baker,</b> assist    </td>
+       <td class="smtext " align="center">73-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:09:00</td>
+       <td class="smtext"><b>Team,</b> timeout short   </td>
+       <td class="smtext " align="center">73-85</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:09:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">73-85</td>
+	     <td class="smtext"><b>Omer Yurtseven,</b> substitution out   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">02:09:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">73-85</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> substitution in   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:54:00</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">73-87</td>
+	     <td class="smtext"><b>Terrell Allen,</b> 2pt jumpshot   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:47:00</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution out   </td>
+       <td class="smtext " align="center">73-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:47:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution in   </td>
+       <td class="smtext " align="center">73-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:47:00</td>
+       <td class="smtext"><b>Team,</b> timeout short   </td>
+       <td class="smtext " align="center">73-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:35:00</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">73-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:32:00</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution in   </td>
+       <td class="smtext " align="center">74-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:32:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> freethrow 2of2 2ndchance  made</td>
+       <td class="smtext boldtext" align="center">75-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:32:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> rebound offensive   </td>
+       <td class="smtext " align="center">73-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:32:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">73-87</td>
+	     <td class="smtext"><b>Terrell Allen,</b> foul personal oneandone  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:32:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> foulon    </td>
+       <td class="smtext " align="center">73-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:32:00</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> freethrow 1of2 2ndchance  made</td>
+       <td class="smtext boldtext" align="center">74-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:32:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution out   </td>
+       <td class="smtext " align="center">74-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:08:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"><b>Terrell Allen,</b> 2pt layup pointsinthepaint  missed</td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:05:00</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution out   </td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:05:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution in   </td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">01:05:00</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"><b>Team,</b> rebound offensive team  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:59:90</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"><b>Jahvon Blair,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:52:00</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> 3pt jumpshot fromturnover  missed</td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:47:60</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:27:50</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> steal    </td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:27:50</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">75-87</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:20:30</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> assist    </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:20:30</td>
+       <td class="smtext"><b>Hayden Koval,</b> 3pt jumpshot fromturnover  made</td>
+       <td class="smtext boldtext" align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:18:90</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution in   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:18:90</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution in   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:18:90</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution out   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:18:90</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution out   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:18:90</td>
+       <td class="smtext"><b>Team,</b> timeout full   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"><b>Jaxson Baker,</b> substitution in   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> substitution in   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">78-89</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> freethrow 2of2   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"></td>
+       <td class="smtext boldtext" align="center">78-88</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> freethrow 1of2   made</td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"><b>Jared Chatham,</b> substitution out   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"><b>Masai Olowokere,</b> substitution out   </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"><b>Jagan Mosely,</b> foulon    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:09:20</td>
+       <td class="smtext"><b>Eddy Kayouloud,</b> foul personal oneandone  </td>
+       <td class="smtext " align="center">78-87</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:02:90</td>
+       <td class="smtext"><b>Lewis McDaniel,</b> 3pt jumpshot   missed</td>
+       <td class="smtext " align="center">78-89</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:90</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">78-89</td>
+	     <td class="smtext"><b>Terrell Allen,</b> turnover lostball   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:90</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">78-89</td>
+	     <td class="smtext"><b>Terrell Allen,</b> rebound defensive   </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:10</td>
+       <td class="smtext"></td>
+       <td class="smtext " align="center">78-89</td>
+	     <td class="smtext"><b>Qudus Wahab,</b> steal    </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:10</td>
+       <td class="smtext"><b>Rylan Bergersen,</b> turnover badpass   </td>
+       <td class="smtext " align="center">78-89</td>
+	     <td class="smtext"></td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> period end confirmed  </td>
+   </tr>
+   <tr>
+	   <td class="smtext">00:00:00</td>
+       <td colspan="3" align="center" class="boldtext"><b></b> game end confirmed  </td>
+   </tr>
+</tbody></table>
+<br>
+
+<br>
+
+    </div>
+
+    <div class="footer"></div>
+
+  
+  <script>
+      //ui-datepicker = calendar month prev/next buttons, 
+      //ui-corner-all = autocomplete dropdown results
+      //paginate_button = datatables
+    function skipMask(obj){
+      if (obj.hasClass('chosen-single') || obj.hasClass('skipMask') || obj.hasClass('ui-datepicker-prev') || obj.hasClass('ui-datepicker-next') || obj.hasClass('ui-corner-all') || obj.hasClass('paginate_button') || obj.hasClass('dt-button')){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    $(document).ajaxComplete(function(){
+      unmask();
+    });
+/*
+    $("form").on('submit', function(event){
+      if (skipMask($(this))){
+        return;
+      }else{
+        mask('Loading');
+      }
+    });
+    */
+    $(document).on('click', 'a', function(){
+      if (skipMask($(this))){
+        return;
+      }else{
+        mask('Loading');
+      }
+    });
+    $(document).on('click', 'input.green', function(){
+      if (skipMask($(this))){
+        return;
+      }else{
+        mask('Loading');
+      }
+    });
+  </script>
+
+<ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" id="ui-id-1" tabindex="0" style="display: none;"></ul></body></html>
