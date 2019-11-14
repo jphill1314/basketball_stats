@@ -10,13 +10,14 @@ class Scoreline(table: Table) {
     val awayScores: List<Int>
 
     init {
+        // TODO: Handle overtime
         table.list[1].apply {
             awayTeamName = get(0)
-            awayScores = mutableListOf(get(1).toInt(), get(2).toInt(), get(3).toInt())
+            awayScores = drop(1).map { it.toInt() }
         }
         table.list[2].apply {
             homeTeamName = get(0)
-            homeScores = mutableListOf(get(1).toInt(), get(2).toInt(), get(3).toInt())
+            homeScores = drop(1).map { it.toInt() }
         }
     }
 

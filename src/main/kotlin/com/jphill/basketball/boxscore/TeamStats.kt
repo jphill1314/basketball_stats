@@ -2,7 +2,7 @@ package com.jphill.basketball.boxscore
 
 import com.jphill.basketball.models.Table
 
-class TeamStats(table: Table) {
+class TeamStats(table: Table, gameId: Int) {
 
     val name = table.list[0][0]
     val headings = table.list[1]
@@ -15,7 +15,7 @@ class TeamStats(table: Table) {
             for (index in player.indices) {
                 map[headings[index]] = player[index]
             }
-            players.add(PlayerStats(map))
+            players.add(PlayerStats(map, gameId))
         }
         totalStats = players.last()
         players.remove(totalStats)
