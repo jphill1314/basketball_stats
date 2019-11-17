@@ -12,7 +12,7 @@ class BoxScore(elements: Elements, path: String, d1TeamNames: List<String>) {
 
     init {
         val tables = elements.map { Table(it) }
-        id = path.drop(10).dropLast(10).toInt()
+        id = getIdFromPath(path)
         scoreline = Scoreline(tables[0])
         awayTeam = TeamStats(tables[4], id, d1TeamNames)
         homeTeam = TeamStats(tables[5], id, d1TeamNames)
@@ -26,5 +26,9 @@ class BoxScore(elements: Elements, path: String, d1TeamNames: List<String>) {
         val poss = getPossessions()
         return "$scoreline\n\n$awayTeam Off Eff: ${awayTeam.getEfficiency(poss)}" +
                 "\n$homeTeam Off Eff: ${homeTeam.getEfficiency(poss)}\nPossessions: ${poss}"
+    }
+
+    companion object {
+        fun getIdFromPath(path: String) = path.drop(10).dropLast(10).toInt()
     }
 }

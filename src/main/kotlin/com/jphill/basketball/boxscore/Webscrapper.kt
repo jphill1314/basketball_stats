@@ -6,11 +6,11 @@ import java.net.SocketTimeoutException
 
 object Webscrapper {
 
-    fun scrapeData(d1TeamNames: List<String>): BasketballWorld {
+    fun scrapeData(d1TeamNames: List<String>, currentWorld: BasketballWorld? = null): BasketballWorld {
         val baseUrl = "https://stats.ncaa.org"
-        val basketballWorld = BasketballWorld(mutableMapOf(), mutableMapOf())
+        val basketballWorld = currentWorld ?: BasketballWorld(mutableMapOf(), mutableMapOf())
 
-        for (date in 5..16) {
+        for (date in 17..17) {
             println("Date: $date")
             val url = "https://stats.ncaa.org/season_divisions/17060/scoreboards?utf8=✓&season_division_id=&game_date=11%2F${getDate(date)}%2F2019&conference_id=0&tournament_id=&commit=Submit"
             val doc = Jsoup.connect(url).get()
@@ -18,11 +18,14 @@ object Webscrapper {
             links.forEachIndexed { index, link ->
                 println("Game: ${index + 1} of ${links.size}")
                 val path = link.attr("href")
-                try {
-                    val boxScore = Jsoup.connect(baseUrl + path).get()
-                    basketballWorld.addBoxScore(BoxScore(boxScore.getElementsByTag("table"), path, d1TeamNames))
-                } catch (e: SocketTimeoutException) {
-                    println("Socket timeout for: $path")
+                if (!basketballWorld.games.containsKey(BoxScore.getIdFromPath(path))) {
+                    println("New game")
+                    try {
+                        val boxScore = Jsoup.connect(baseUrl + path).get()
+                        basketballWorld.addBoxScore(BoxScore(boxScore.getElementsByTag("table"), path, d1TeamNames))
+                    } catch (e: SocketTimeoutException) {
+                        println("Socket timeout for: $path")
+                    }
                 }
             }
         }

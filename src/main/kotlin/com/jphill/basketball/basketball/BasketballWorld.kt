@@ -29,15 +29,17 @@ class BasketballWorld(
         }
     }
 
-    fun getAverageTempo() = d1Teams.map { it.getRawTempo() }.sum() / d1Teams.size
+    fun getAverageTempo() = d1Teams.map { it.rawTempo }.sum() / d1Teams.size
 
-    fun getAverageOffEff() = d1Teams.map { it.getRawOffensiveEfficiency() }.sum() / d1Teams.size
+    fun getAverageOffEff() = d1Teams.map { it.rawOffEff }.sum() / d1Teams.size
 
-    fun getAverageDefEff() = d1Teams.map { it.getRawDefensiveEfficiency() }.sum() / d1Teams.size
+    fun getAverageDefEff() = d1Teams.map { it.rawDefEff }.sum() / d1Teams.size
 
     fun getAverageEff() = (getAverageOffEff() + getAverageDefEff()) / 2
 
     fun calculateStats() {
-        games.forEach { (_, game) -> game.calculateStatsFirstPass() }
+        games.forEach { (_, game) -> game.calculateStats() }
+        d1Teams.forEach { team -> team.calculateRawStats() }
+        d1Teams.forEach { team -> team.calculateAdjustedStats(getAverageTempo(), getAverageEff()) }
     }
 }

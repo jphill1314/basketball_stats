@@ -1,7 +1,6 @@
 package com.jphill.basketball.basketball
 
 import com.jphill.basketball.boxscore.TeamStats
-import kotlin.math.exp
 
 class Team(
     val id: Int,
@@ -14,6 +13,14 @@ class Team(
     val pointsScored = mutableListOf<Int>()
     val pointsAllowed = mutableListOf<Int>()
     var totalGames = 0
+
+    var rawOffEff = 0.0
+    var rawDefEff = 0.0
+    var rawTempo = 0.0
+
+    var adjOffEff = 0.0
+    var adjDefEff = 0.0
+    var adjTempo = 0.0
 
     val opponents = mutableListOf<Team>()
 
@@ -44,7 +51,23 @@ class Team(
         )
     }
 
-    fun getRawTempo(): Double {
+    fun calculateRawStats() {
+        rawTempo = calcRawTempo()
+        rawOffEff = getRawOffensiveEfficiency()
+        rawDefEff = getRawDefensiveEfficiency()
+    }
+
+    fun calculateAdjustedStats(aveTempo: Double, aveEff: Double) {
+        adjTempo = getAdjTempo(aveTempo)
+        adjOffEff = getAdjOffensiveEfficiency(aveEff)
+        adjDefEff = getAdjDefensiveEfficiency(aveEff)
+    }
+
+    fun getAdjEfficiency(): Double {
+        return adjOffEff - adjDefEff
+    }
+
+    private fun calcRawTempo(): Double {
         var total = 0.0
         for (i in possessions.indices) {
             total += possessions[i] * possessionAdj[i]
@@ -52,19 +75,18 @@ class Team(
         return total / totalGames
     }
 
-    fun getAdjTempo(aveTempo: Double): Double {
-        val raw = getRawTempo()
+    private fun getAdjTempo(aveTempo: Double): Double {
         val adj = mutableListOf<Double>()
         for (i in possessions.indices) {
-            val expected = aveTempo + (opponents[i].getRawTempo() - aveTempo) + (raw - aveTempo)
+            val expected = aveTempo + (opponents[i].rawTempo - aveTempo) + (rawTempo - aveTempo)
             val tempo = possessions[i] * possessionAdj[i]
             val diff = (tempo / expected) - 1
-            adj.add(tempo * diff + raw)
+            adj.add(tempo * diff + rawTempo)
         }
         return adj.sum() / totalGames
     }
 
-    fun getRawOffensiveEfficiency(): Double {
+    private fun getRawOffensiveEfficiency(): Double {
         var total = 0.0
         for (i in pointsScored.indices) {
             total += pointsScored[i] / possessions[i]
@@ -72,19 +94,18 @@ class Team(
         return total / totalGames * 100
     }
 
-    fun getAdjOffensiveEfficiency(aveEff: Double): Double {
-        val raw = getRawOffensiveEfficiency()
+    private fun getAdjOffensiveEfficiency(aveEff: Double): Double {
         val adj = mutableListOf<Double>()
         for (i in pointsScored.indices) {
-            val expected = raw + (opponents[i].getRawDefensiveEfficiency() - aveEff)
+            val expected = rawOffEff + (opponents[i].rawDefEff - aveEff)
             val result = pointsScored[i] / possessions[i] * 100
             val diff = (result / expected) - 1
-            adj.add(expected * diff + raw)
+            adj.add(expected * diff + rawOffEff)
         }
         return adj.sum() / totalGames
     }
 
-    fun getRawDefensiveEfficiency(): Double {
+    private fun getRawDefensiveEfficiency(): Double {
         var total = 0.0
         for (i in pointsAllowed.indices) {
             total += pointsAllowed[i] / possessions[i]
@@ -92,29 +113,15 @@ class Team(
         return total / totalGames * 100
     }
 
-    fun getAdjDefensiveEfficiency(aveEff: Double): Double {
-        val raw = getRawDefensiveEfficiency()
+    private fun getAdjDefensiveEfficiency(aveEff: Double): Double {
         val adj = mutableListOf<Double>()
         for (i in pointsScored.indices) {
-            val expected = raw + (opponents[i].getRawOffensiveEfficiency() - aveEff)
+            val expected = rawDefEff + (opponents[i].rawOffEff - aveEff)
             val result = pointsAllowed[i] / possessions[i] * 100
             val diff = (result / expected) - 1
-            adj.add(expected * diff + raw)
+            adj.add(expected * diff + rawDefEff)
         }
         return adj.sum() / totalGames
-    }
-
-    fun getAdjEfficiency(aveEff: Double): Double {
-        return getAdjOffensiveEfficiency(aveEff) - getAdjDefensiveEfficiency(aveEff)
-    }
-
-    fun clearData() {
-        possessions.clear()
-        pointsScored.clear()
-        pointsAllowed.clear()
-        totalGames = 0
-
-        opponents.clear()
     }
 
     companion object {

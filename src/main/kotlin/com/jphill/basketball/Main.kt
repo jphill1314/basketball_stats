@@ -10,16 +10,16 @@ fun main() {
     val newWorld = DatabaseHelper.createBasketballWorld()
     val stats = newWorld.d1Teams.toMutableList()
     val ave = newWorld.getAverageEff()
-    stats.sortBy { it.getAdjEfficiency(ave) }
-    stats.forEach { println("${it.name}\t\t\t${it.getAdjEfficiency(ave)}") }
-//    println("Ave Poss: ${newWorld.getAverageTempo()}")
-//    println("Ave OffEff: ${newWorld.getAverageOffEff()}")
-//    println("Ave DefEff: ${newWorld.getAverageDefEff()}")
-//    println("Ave Eff: ${newWorld.getAverageEff()}")
+    stats.sortBy { it.getAdjEfficiency() }
+    stats.forEach { println("${it.name}\t\t\t${format(it.getAdjEfficiency())}\t${format(it.adjOffEff)}\t${format(it.adjDefEff)}") }
+}
+
+private fun format(value: Double): String {
+    return String.format("%.2f", value)
 }
 
 private fun scrapeAndSave() {
-    val basketballWorld = Webscrapper.scrapeData(DatabaseHelper.getD1TeamNames())
+    val basketballWorld = Webscrapper.scrapeData(DatabaseHelper.getD1TeamNames(), DatabaseHelper.createBasketballWorld())
     DatabaseHelper.clearDatabase()
     DatabaseHelper.insertBasketballWorld(basketballWorld)
 }

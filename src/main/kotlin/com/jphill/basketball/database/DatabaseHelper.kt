@@ -34,7 +34,6 @@ object DatabaseHelper {
 
     fun insertBasketballWorld(basketballWorld: BasketballWorld) {
         transaction {
-            addLogger(StdOutSqlLogger)
             SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
 
             TeamTable.batchInsert(basketballWorld.teams.toList()) { pair ->

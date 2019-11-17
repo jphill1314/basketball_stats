@@ -1,6 +1,5 @@
 package com.jphill.basketball.basketball
 
-import kotlin.math.ceil
 import kotlin.math.round
 
 class Game(
@@ -12,7 +11,7 @@ class Game(
     val periods: Int
 ) {
 
-    fun calculateStatsFirstPass() {
+    fun calculateStats() {
         if (!homeTeam.isD1 || !awayTeam.isD1) {
             return
         }
