@@ -21,6 +21,7 @@ class Scoreline(table: Table) {
         }
     }
 
+    fun getPeriods() = homeScores.size - 1
 
     override fun toString(): String {
         val firstLine = "$awayTeamName\t\t${awayScores[0]} ${awayScores[1]} ${awayScores[2]}"

@@ -2,12 +2,13 @@ package com.jphill.basketball.boxscore
 
 import com.jphill.basketball.models.Table
 
-class TeamStats(table: Table, gameId: Int) {
+class TeamStats(table: Table, gameId: Int, d1TeamNames: List<String>) {
 
     val name = table.list[0][0]
     val headings = table.list[1]
     val players = mutableListOf<PlayerStats>()
     val totalStats: PlayerStats
+    val isD1: Boolean
 
     init {
         table.list.drop(2).forEach { player ->
@@ -19,6 +20,7 @@ class TeamStats(table: Table, gameId: Int) {
         }
         totalStats = players.last()
         players.remove(totalStats)
+        isD1 = d1TeamNames.contains(name)
     }
 
     fun getPossessions(): Double {

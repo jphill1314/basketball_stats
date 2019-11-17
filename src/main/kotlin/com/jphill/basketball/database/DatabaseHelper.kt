@@ -21,6 +21,17 @@ object DatabaseHelper {
         }
     }
 
+    fun getD1TeamNames(): List<String> {
+        val names = mutableListOf<String>()
+        transaction {
+            SchemaUtils.create(D1TeamNamesTable)
+            D1TeamNamesTable.selectAll().forEach { row ->
+                names.add(row[D1TeamNamesTable.name])
+            }
+        }
+        return names
+    }
+
     fun insertBasketballWorld(basketballWorld: BasketballWorld) {
         transaction {
             addLogger(StdOutSqlLogger)
@@ -30,13 +41,15 @@ object DatabaseHelper {
                 val team = pair.second
                 this[TeamTable.id] = team.id
                 this[TeamTable.name] = team.name
+                this[TeamTable.isD1] = team.isD1
             }
 
             GameTable.batchInsert(basketballWorld.games.toList()) { pair ->
                 val game = pair.second
                 this[GameTable.id] = game.id
-                this[GameTable.homeTeam] = game.homeTeam
-                this[GameTable.awayTeam] = game.awayTeam
+                this[GameTable.homeTeam] = game.homeTeamName
+                this[GameTable.awayTeam] = game.awayTeamName
+                this[GameTable.periods] = game.periods
             }
 
             basketballWorld.teams.forEach { (_, team) ->
@@ -76,10 +89,6 @@ object DatabaseHelper {
         val games = mutableMapOf<Int, Game>()
 
         transaction {
-            GameTable.selectAll().forEach { row ->
-                games[row[GameTable.id]] = Game(row[GameTable.id], row[GameTable.homeTeam], row[GameTable.awayTeam])
-            }
-
             TeamTable.selectAll().forEach { row ->
                 val players = mutableMapOf<String, Player>()
                 PlayerTable.select { PlayerTable.team eq row[TeamTable.id] }.forEach { pRow ->
@@ -109,10 +118,21 @@ object DatabaseHelper {
                     players[pRow[PlayerTable.name]] =
                         Player(pRow[PlayerTable.id].value, pRow[PlayerTable.name], pRow[PlayerTable.position], stats)
                 }
-                teams[row[TeamTable.name]] =Team(row[TeamTable.id], row[TeamTable.name], players)
+                teams[row[TeamTable.name]] = Team(row[TeamTable.id], row[TeamTable.name], players, row[TeamTable.isD1])
+            }
+
+            GameTable.selectAll().forEach { row ->
+                games[row[GameTable.id]] = Game(
+                    row[GameTable.id],
+                    row[GameTable.homeTeam],
+                    row[GameTable.awayTeam],
+                    teams[row[GameTable.homeTeam]]!!,
+                    teams[row[GameTable.awayTeam]]!!,
+                    row[GameTable.periods]
+                )
             }
         }
 
-        return BasketballWorld(teams, games)
+        return BasketballWorld(teams, games).apply { calculateStats() }
     }
 }

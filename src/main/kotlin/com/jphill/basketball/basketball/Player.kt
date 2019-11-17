@@ -9,6 +9,15 @@ class Player(
     val stats: MutableList<PlayerStats> = mutableListOf()
 ) {
 
+    fun getStatsForGame(id: Int): PlayerStats? {
+        stats.forEach { game ->
+            if (game.gameId == id) {
+                return game
+            }
+        }
+        return null
+    }
+
     companion object {
         fun from(stats: PlayerStats) = Player(null, stats.name, stats.position, mutableListOf(stats))
     }
