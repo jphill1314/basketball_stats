@@ -14,11 +14,16 @@ object DatabaseHelper {
         Database.connect("jdbc:h2:file:../src/main/resources/stats.db", driver = "org.h2.Driver")
     }
 
+    fun clearDatabase() {
+        transaction {
+            SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
+            SchemaUtils.drop(GameTable, GameStatsTable, PlayerTable, TeamTable)
+        }
+    }
+
     fun insertBasketballWorld(basketballWorld: BasketballWorld) {
         transaction {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
-            SchemaUtils.drop(GameTable, GameStatsTable, PlayerTable, TeamTable)
             SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
 
             TeamTable.batchInsert(basketballWorld.teams.toList()) { pair ->
