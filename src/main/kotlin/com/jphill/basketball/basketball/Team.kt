@@ -22,6 +22,10 @@ class Team(
     var adjDefEff = 0.0
     var adjTempo = 0.0
 
+    var adjOffPasses = mutableListOf<Double>()
+    var adjDefPasses = mutableListOf<Double>()
+    var adjTempoPasses = mutableListOf<Double>()
+
     val opponents = mutableListOf<Team>()
 
     fun addStatsFromGame(teamStats: TeamStats) {
@@ -52,15 +56,30 @@ class Team(
     }
 
     fun calculateRawStats() {
-        rawTempo = calcRawTempo()
-        rawOffEff = getRawOffensiveEfficiency()
-        rawDefEff = getRawDefensiveEfficiency()
+        if (totalGames > 0) {
+            rawTempo = calcRawTempo()
+            adjTempoPasses.add(rawTempo)
+            rawOffEff = getRawOffensiveEfficiency()
+            adjOffPasses.add(rawOffEff)
+            rawDefEff = getRawDefensiveEfficiency()
+            adjDefPasses.add(rawDefEff)
+        }
+    }
+
+    fun calculateAdjustedPass(aveTempo: Double, aveEff: Double) {
+        if (totalGames > 0) {
+            adjTempoPasses.add(getAdjTempo(aveTempo))
+            adjOffPasses.add(getAdjOffensiveEfficiency(aveEff))
+            adjDefPasses.add(getAdjDefensiveEfficiency(aveEff))
+        }
     }
 
     fun calculateAdjustedStats(aveTempo: Double, aveEff: Double) {
-        adjTempo = getAdjTempo(aveTempo)
-        adjOffEff = getAdjOffensiveEfficiency(aveEff)
-        adjDefEff = getAdjDefensiveEfficiency(aveEff)
+        if (totalGames > 0) {
+            adjTempo = getAdjTempo(aveTempo)
+            adjOffEff = getAdjOffensiveEfficiency(aveEff)
+            adjDefEff = getAdjDefensiveEfficiency(aveEff)
+        }
     }
 
     fun getAdjEfficiency(): Double {
@@ -77,11 +96,12 @@ class Team(
 
     private fun getAdjTempo(aveTempo: Double): Double {
         val adj = mutableListOf<Double>()
+        val passNumber = adjTempoPasses.size - 1
         for (i in possessions.indices) {
-            val expected = aveTempo + (opponents[i].rawTempo - aveTempo) + (rawTempo - aveTempo)
+            val expected = aveTempo + (opponents[i].adjTempoPasses[passNumber] - aveTempo) + (adjTempoPasses[passNumber] - aveTempo)
             val tempo = possessions[i] * possessionAdj[i]
             val diff = (tempo / expected) - 1
-            adj.add(tempo * diff + rawTempo)
+            adj.add(tempo * diff + adjTempoPasses[passNumber])
         }
         return adj.sum() / totalGames
     }
@@ -96,11 +116,12 @@ class Team(
 
     private fun getAdjOffensiveEfficiency(aveEff: Double): Double {
         val adj = mutableListOf<Double>()
+        val passNumber = adjOffPasses.size - 1
         for (i in pointsScored.indices) {
-            val expected = rawOffEff + (opponents[i].rawDefEff - aveEff)
+            val expected = adjOffPasses[passNumber] + (opponents[i].adjDefPasses[passNumber] - aveEff)
             val result = pointsScored[i] / possessions[i] * 100
             val diff = (result / expected) - 1
-            adj.add(expected * diff + rawOffEff)
+            adj.add(expected * diff + adjOffPasses[passNumber])
         }
         return adj.sum() / totalGames
     }
@@ -115,11 +136,12 @@ class Team(
 
     private fun getAdjDefensiveEfficiency(aveEff: Double): Double {
         val adj = mutableListOf<Double>()
+        val passNumber = adjDefPasses.size - 1
         for (i in pointsScored.indices) {
-            val expected = rawDefEff + (opponents[i].rawOffEff - aveEff)
+            val expected = adjDefPasses[passNumber] + (opponents[i].adjOffPasses[passNumber] - aveEff)
             val result = pointsAllowed[i] / possessions[i] * 100
             val diff = (result / expected) - 1
-            adj.add(expected * diff + rawDefEff)
+            adj.add(expected * diff + adjDefPasses[passNumber])
         }
         return adj.sum() / totalGames
     }

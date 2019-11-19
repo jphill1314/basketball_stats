@@ -5,13 +5,15 @@ import com.jphill.basketball.database.*
 
 fun main() {
     DatabaseHelper.connectToDatabase()
+//    DatabaseHelper.createTeamNames()
 //    scrapeAndSave()
 
     val newWorld = DatabaseHelper.createBasketballWorld()
+
     val stats = newWorld.d1Teams.toMutableList()
-    val ave = newWorld.getAverageEff()
-    stats.sortBy { it.getAdjEfficiency() }
-    stats.forEach { println("${it.name}\t\t\t${format(it.getAdjEfficiency())}\t${format(it.adjOffEff)}\t${format(it.adjDefEff)}") }
+    stats.sortBy { it.adjTempo }
+//    stats.forEach { println("${it.name}\t\t\t${format(it.getAdjEfficiency())}\t${format(it.adjOffEff)}\t${format(it.adjDefEff)}") }
+    stats.forEach { println("${it.name}: ${it.adjTempo}") }
 }
 
 private fun format(value: Double): String {

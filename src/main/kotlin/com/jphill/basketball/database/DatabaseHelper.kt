@@ -7,17 +7,36 @@ import com.jphill.basketball.basketball.Team
 import com.jphill.basketball.boxscore.PlayerStats
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jsoup.Jsoup
+import java.io.File
 
 object DatabaseHelper {
 
     fun connectToDatabase() {
-        Database.connect("jdbc:h2:file:../src/main/resources/stats.db", driver = "org.h2.Driver")
+//        Database.connect("jdbc:h2:file:../src/main/resources/stats.db", driver = "org.h2.Driver")
+        Database.connect("jdbc:h2:file:../src/main/resources/stats2019.db", driver = "org.h2.Driver")
     }
 
     fun clearDatabase() {
         transaction {
             SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
             SchemaUtils.drop(GameTable, GameStatsTable, PlayerTable, TeamTable)
+        }
+    }
+
+    fun createTeamNames() {
+        val file = File("C:\\Users\\jphil\\IdeaProjects\\KotlinBasketballStats\\src\\main\\resources\\2019teams.html")
+        val doc = Jsoup.parse(file, "UTF-8", "www.example.com")
+        val teamNames = mutableListOf<String>()
+        doc.getElementsByClass("dataTable").first().getElementsByTag("tr").drop(1).dropLast(2).forEach { row ->
+            println(row.getElementsByTag("td").first().text())
+            teamNames.add(row.getElementsByTag("td").first().text())
+        }
+        transaction {
+            SchemaUtils.create(D1TeamNamesTable)
+            D1TeamNamesTable.batchInsert(teamNames) {
+                this[D1TeamNamesTable.name] = it
+            }
         }
     }
 
@@ -88,6 +107,7 @@ object DatabaseHelper {
         val games = mutableMapOf<Int, Game>()
 
         transaction {
+            SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
             TeamTable.selectAll().forEach { row ->
                 val players = mutableMapOf<String, Player>()
                 PlayerTable.select { PlayerTable.team eq row[TeamTable.id] }.forEach { pRow ->
