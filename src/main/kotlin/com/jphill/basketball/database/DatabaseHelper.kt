@@ -14,7 +14,7 @@ object DatabaseHelper {
 
     fun connectToDatabase() {
 //        Database.connect("jdbc:h2:file:../src/main/resources/stats.db", driver = "org.h2.Driver")
-        Database.connect("jdbc:h2:file:../src/main/resources/stats2019.db", driver = "org.h2.Driver")
+        Database.connect("jdbc:h2:file:/home/jphill1314/IdeaProjects/basketball_stats/src/main/resources/stats2019.db", driver = "org.h2.Driver")
     }
 
     fun clearDatabase() {

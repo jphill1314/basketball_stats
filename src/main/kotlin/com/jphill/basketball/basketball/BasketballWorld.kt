@@ -29,28 +29,19 @@ class BasketballWorld(
         }
     }
 
-    private fun getAverageTempo() = d1Teams.map { it.adjTempoPasses.last() }.sum() / d1Teams.size
+    private fun getAverageRawTempo() = d1Teams.map { it.rawTempo }.sum() / d1Teams.size
 
-    private fun getAverageOffEff() = d1Teams.map { it.adjOffPasses.last() }.sum() / d1Teams.size
+    private fun getAverageRawOffEff() = d1Teams.map { it.rawOffEff }.sum() / d1Teams.size
 
-    private fun getAverageDefEff() = d1Teams.map { it.adjDefPasses.last() }.sum() / d1Teams.size
+    private fun getAverageRawDefEff() = d1Teams.map { it.rawDefEff }.sum() / d1Teams.size
 
-    private fun getAverageEff() = (getAverageOffEff() + getAverageDefEff()) / 2
+    private fun getAverageRawEff() = (getAverageRawOffEff() + getAverageRawDefEff()) / 2
 
     fun calculateStats() {
         games.forEach { (_, game) -> game.calculateStats() }
-        d1Teams.forEach { team -> team.calculateRawStats() }
-        var tempo = getAverageTempo()
-        var eff = getAverageEff()
-        for (i in 0 until PASSES) {
-            d1Teams.forEach { team -> team.calculateAdjustedPass(tempo, eff) }
-            tempo = getAverageTempo()
-            eff = getAverageEff()
-        }
-        d1Teams.forEach { team -> team.calculateAdjustedStats(tempo, eff) }
-    }
-
-    private companion object {
-        const val PASSES = 2
+        d1Teams.forEach { team -> StatsHelper.calculateRawStatsForTeam(team) }
+        val tempo = getAverageRawTempo()
+        val eff = getAverageRawEff()
+        d1Teams.forEach { team -> StatsHelper.calculateAdjustedStatsForTeam(team, tempo, eff) }
     }
 }

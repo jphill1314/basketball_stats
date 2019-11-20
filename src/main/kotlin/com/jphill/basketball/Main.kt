@@ -11,9 +11,9 @@ fun main() {
     val newWorld = DatabaseHelper.createBasketballWorld()
 
     val stats = newWorld.d1Teams.toMutableList()
-    stats.sortBy { it.adjTempo }
+    stats.sortBy { it.getAdjEfficiency() }
+    stats.forEach { println("${it.name}\t\t\t${format(it.getAdjEfficiency())} ${format(it.getRawEfficiency())}") }
 //    stats.forEach { println("${it.name}\t\t\t${format(it.getAdjEfficiency())}\t${format(it.adjOffEff)}\t${format(it.adjDefEff)}") }
-    stats.forEach { println("${it.name}: ${it.adjTempo}") }
 }
 
 private fun format(value: Double): String {
