@@ -1,2 +1,6 @@
 rootProject.name = 'KotlinBasketballStats'
 
+include ':data'
+include ':backend'
+include ':shared-models'
+

@@ -1,31 +1,10 @@
 package com.jphill.basketball
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.jphill.basketball.boxscore.Webscrapper
-import com.jphill.basketball.database.helpers.DatabaseHelper
-import com.jphill.basketball.server.routing
-
-import io.ktor.application.*
-import io.ktor.features.ContentNegotiation
-import io.ktor.jackson.jackson
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import com.jphill.data.boxscore.Webscrapper
+import com.jphill.data.database.helpers.DatabaseHelper
 
 fun main() {
-    DatabaseHelper.connectToDatabase()
-
-    val server = embeddedServer(Netty, 8080) {
-        install(ContentNegotiation) {
-            jackson {
-                enable(SerializationFeature.INDENT_OUTPUT)
-            }
-        }
-        routing {
-            routing()
-        }
-    }
-    server.start(wait = true)
+//    DatabaseHelper.connectToDatabase()
 }
 
 private fun commandLineDBOps() {
