@@ -1,4 +1,4 @@
-package com.jphill.basketball.database
+package com.jphill.basketball.database.tables
 
 import org.jetbrains.exposed.sql.Table
 

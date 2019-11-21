@@ -1,10 +1,11 @@
-package com.jphill.basketball.database
+package com.jphill.basketball.database.helpers
 
 import com.jphill.basketball.basketball.BasketballWorld
 import com.jphill.basketball.basketball.Game
 import com.jphill.basketball.basketball.Player
 import com.jphill.basketball.basketball.Team
 import com.jphill.basketball.boxscore.PlayerStats
+import com.jphill.basketball.database.tables.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jsoup.Jsoup
@@ -14,13 +15,23 @@ object DatabaseHelper {
 
     fun connectToDatabase() {
 //        Database.connect("jdbc:h2:file:../src/main/resources/stats.db", driver = "org.h2.Driver")
-        Database.connect("jdbc:h2:file:/home/jphill1314/IdeaProjects/basketball_stats/src/main/resources/stats2019.db", driver = "org.h2.Driver")
+        Database.connect("jdbc:h2:file:../src/main/resources/stats2019.db", driver = "org.h2.Driver")
     }
 
     fun clearDatabase() {
         transaction {
-            SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
-            SchemaUtils.drop(GameTable, GameStatsTable, PlayerTable, TeamTable)
+            SchemaUtils.create(
+                GameTable,
+                GameStatsTable,
+                PlayerTable,
+                TeamTable
+            )
+            SchemaUtils.drop(
+                GameTable,
+                GameStatsTable,
+                PlayerTable,
+                TeamTable
+            )
         }
     }
 
@@ -53,13 +64,24 @@ object DatabaseHelper {
 
     fun insertBasketballWorld(basketballWorld: BasketballWorld) {
         transaction {
-            SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
+            SchemaUtils.create(
+                GameTable,
+                GameStatsTable,
+                PlayerTable,
+                TeamTable
+            )
 
             TeamTable.batchInsert(basketballWorld.teams.toList()) { pair ->
                 val team = pair.second
                 this[TeamTable.id] = team.id
                 this[TeamTable.name] = team.name
                 this[TeamTable.isD1] = team.isD1
+                this[TeamTable.adjOffEff] = team.adjOffEff
+                this[TeamTable.adjDefEff] = team.adjDefEff
+                this[TeamTable.adjTempo] = team.adjTempo
+                this[TeamTable.rawOffEff] = team.rawOffEff
+                this[TeamTable.rawDefEff] = team.rawDefEff
+                this[TeamTable.rawTempo] = team.rawTempo
             }
 
             GameTable.batchInsert(basketballWorld.games.toList()) { pair ->
@@ -102,42 +124,36 @@ object DatabaseHelper {
         }
     }
 
+//    fun updateTeamStats(basketballWorld: BasketballWorld) {
+//        transaction {
+//            SchemaUtils.create(TeamTable)
+//            basketballWorld.d1Teams.forEach { team ->
+//                TeamTable.update ({ TeamTable.id eq team.id }) {
+//                    it[adjOffEff] = team.adjOffEff
+//                    it[adjDefEff] = team.adjDefEff
+//                    it[adjTempo] = team.adjTempo
+//                    it[rawOffEff] = team.rawOffEff
+//                    it[rawDefEff] = team.rawDefEff
+//                    it[rawTempo] = team.rawTempo
+//                }
+//            }
+//        }
+//    }
+
     fun createBasketballWorld(): BasketballWorld {
         val teams = mutableMapOf<String, Team>()
         val games = mutableMapOf<Int, Game>()
 
         transaction {
-            SchemaUtils.create(GameTable, GameStatsTable, PlayerTable, TeamTable)
+            SchemaUtils.create(
+                GameTable,
+                GameStatsTable,
+                PlayerTable,
+                TeamTable
+            )
             TeamTable.selectAll().forEach { row ->
-                val players = mutableMapOf<String, Player>()
-                PlayerTable.select { PlayerTable.team eq row[TeamTable.id] }.forEach { pRow ->
-                    val stats = mutableListOf<PlayerStats>()
-                    GameStatsTable.select { GameStatsTable.playerId eq pRow[PlayerTable.id].value }.forEach { sRow ->
-                        stats.add(PlayerStats(
-                            sRow[GameStatsTable.gameId],
-                            pRow[PlayerTable.name],
-                            pRow[PlayerTable.position],
-                            sRow[GameStatsTable.FGM],
-                            sRow[GameStatsTable.FGA],
-                            sRow[GameStatsTable.threeFGM],
-                            sRow[GameStatsTable.threeFGA],
-                            sRow[GameStatsTable.FTM],
-                            sRow[GameStatsTable.FTA],
-                            sRow[GameStatsTable.points],
-                            sRow[GameStatsTable.oRebounds],
-                            sRow[GameStatsTable.dRebounds],
-                            sRow[GameStatsTable.rebounds],
-                            sRow[GameStatsTable.assists],
-                            sRow[GameStatsTable.turnovers],
-                            sRow[GameStatsTable.steals],
-                            sRow[GameStatsTable.blocks],
-                            sRow[GameStatsTable.fouls]
-                        ))
-                    }
-                    players[pRow[PlayerTable.name]] =
-                        Player(pRow[PlayerTable.id].value, pRow[PlayerTable.name], pRow[PlayerTable.position], stats)
-                }
-                teams[row[TeamTable.name]] = Team(row[TeamTable.id], row[TeamTable.name], players, row[TeamTable.isD1])
+                val team = TeamHelper.makeTeam(row)
+                teams[team.name] = team
             }
 
             GameTable.selectAll().forEach { row ->
@@ -153,5 +169,23 @@ object DatabaseHelper {
         }
 
         return BasketballWorld(teams, games).apply { calculateStats() }
+    }
+
+    fun getTeam(id: Int): Team? {
+        var team: Team? = null
+        transaction {
+            SchemaUtils.create(TeamTable)
+            team = TeamHelper.createTeam(id)
+        }
+        return team
+    }
+
+    fun getPlayer(id: Int): Player? {
+        var player: Player? = null
+        transaction {
+            SchemaUtils.create(PlayerTable)
+            player = PlayerHelper.createPlayer(id)
+        }
+        return player
     }
 }

@@ -1,54 +1,28 @@
 package com.jphill.basketball
 
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.jphill.basketball.boxscore.Webscrapper
-import com.jphill.basketball.database.*
+import com.jphill.basketball.database.helpers.DatabaseHelper
+import com.jphill.basketball.server.routing
 
 import io.ktor.application.*
-import io.ktor.html.respondHtml
+import io.ktor.features.ContentNegotiation
+import io.ktor.jackson.jackson
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import kotlinx.html.*
 
 fun main() {
+    DatabaseHelper.connectToDatabase()
+
     val server = embeddedServer(Netty, 8080) {
-        routing {
-            get("/") {
-                DatabaseHelper.connectToDatabase()
-                val teams = DatabaseHelper.createBasketballWorld().d1Teams.sortedBy { -it.getAdjEfficiency() }
-                call.respondHtml {
-                    body {
-                        table {
-                            tr {
-                                th { +"Rank" }
-                                th { +"Team" }
-                                th { +"Adj Eff" }
-                                th { +"Adj Off Eff" }
-                                th { +"Adj Def Eff" }
-                                th { +"Adj Tempo" }
-                                th { +"Eff" }
-                                th { +"Off Eff" }
-                                th { +"Def Eff" }
-                                th { +"Tempo" }
-                            }
-                            teams.forEachIndexed { index, team ->
-                                tr {
-                                    td { +"${index + 1}" }
-                                    td { +team.name }
-                                    td { +format(team.getAdjEfficiency()) }
-                                    td { +format(team.adjOffEff) }
-                                    td { +format(team.adjDefEff) }
-                                    td { +format(team.adjTempo) }
-                                    td { +format(team.rawOffEff - team.rawDefEff) }
-                                    td { +format(team.rawOffEff) }
-                                    td { +format(team.rawDefEff) }
-                                    td { +format(team.rawTempo) }
-                                }
-                            }
-                        }
-                    }
-                }
+        install(ContentNegotiation) {
+            jackson {
+                enable(SerializationFeature.INDENT_OUTPUT)
             }
+        }
+        routing {
+            routing()
         }
     }
     server.start(wait = true)
@@ -57,7 +31,7 @@ fun main() {
 private fun commandLineDBOps() {
     DatabaseHelper.connectToDatabase()
 //    DatabaseHelper.createTeamNames()
-//    scrapeAndSave()
+    scrapeAndSave()
 
     val newWorld = DatabaseHelper.createBasketballWorld()
 
