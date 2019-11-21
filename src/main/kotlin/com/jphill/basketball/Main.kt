@@ -3,7 +3,58 @@ package com.jphill.basketball
 import com.jphill.basketball.boxscore.Webscrapper
 import com.jphill.basketball.database.*
 
+import io.ktor.application.*
+import io.ktor.html.respondHtml
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import kotlinx.html.*
+
 fun main() {
+    val server = embeddedServer(Netty, 8080) {
+        routing {
+            get("/") {
+                DatabaseHelper.connectToDatabase()
+                val teams = DatabaseHelper.createBasketballWorld().d1Teams.sortedBy { -it.getAdjEfficiency() }
+                call.respondHtml {
+                    body {
+                        table {
+                            tr {
+                                th { +"Rank" }
+                                th { +"Team" }
+                                th { +"Adj Eff" }
+                                th { +"Adj Off Eff" }
+                                th { +"Adj Def Eff" }
+                                th { +"Adj Tempo" }
+                                th { +"Eff" }
+                                th { +"Off Eff" }
+                                th { +"Def Eff" }
+                                th { +"Tempo" }
+                            }
+                            teams.forEachIndexed { index, team ->
+                                tr {
+                                    td { +"${index + 1}" }
+                                    td { +team.name }
+                                    td { +format(team.getAdjEfficiency()) }
+                                    td { +format(team.adjOffEff) }
+                                    td { +format(team.adjDefEff) }
+                                    td { +format(team.adjTempo) }
+                                    td { +format(team.rawOffEff - team.rawDefEff) }
+                                    td { +format(team.rawOffEff) }
+                                    td { +format(team.rawDefEff) }
+                                    td { +format(team.rawTempo) }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    server.start(wait = true)
+}
+
+private fun commandLineDBOps() {
     DatabaseHelper.connectToDatabase()
 //    DatabaseHelper.createTeamNames()
 //    scrapeAndSave()
