@@ -1,0 +1,15 @@
+th {
+    text-align: left;
+}
+
+th, td {
+    padding: 15px;
+}
+
+.even {
+    background: #f2f2f2
+}
+
+.odd {
+    background: #e3e3e3
+}

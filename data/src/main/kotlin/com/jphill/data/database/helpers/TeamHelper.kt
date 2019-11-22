@@ -15,6 +15,10 @@ object TeamHelper {
         }
     }
 
+    fun createTeam(name: String): Team? {
+        return TeamTable.select { TeamTable.name eq name }.firstOrNull()?.let { makeTeam(it) }
+    }
+
     fun makeTeam(row: ResultRow) = Team(
         row[TeamTable.id],
         row[TeamTable.name],

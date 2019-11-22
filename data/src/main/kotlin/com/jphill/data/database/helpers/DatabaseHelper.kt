@@ -179,6 +179,15 @@ object DatabaseHelper {
         return team
     }
 
+    fun getTeam(name: String): Team? {
+        var team: Team? = null
+        transaction {
+            SchemaUtils.create(TeamTable)
+            team = TeamHelper.createTeam(name)
+        }
+        return team
+    }
+
     fun getPlayer(id: Int): Player? {
         var player: Player? = null
         transaction {
@@ -186,5 +195,23 @@ object DatabaseHelper {
             player = PlayerHelper.createPlayer(id)
         }
         return player
+    }
+
+    fun getGame(id: Int): Game? {
+        var game: Game? = null
+        transaction {
+            SchemaUtils.create(GameTable)
+            game = GameHelper.createGame(id)
+        }
+        return game
+    }
+
+    fun getGamesForTeam(team: Team): List<Game> {
+        var games: List<Game> = emptyList()
+        transaction {
+            SchemaUtils.create(GameTable)
+            games = GameHelper.createGamesForTeam(team.name)
+        }
+        return games
     }
 }

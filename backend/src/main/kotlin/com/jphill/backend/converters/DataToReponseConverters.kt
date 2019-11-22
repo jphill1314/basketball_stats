@@ -1,9 +1,11 @@
 package com.jphill.backend.converters
 
+import com.jphill.data.basketball.Game
 import com.jphill.data.basketball.Player
 import com.jphill.data.basketball.Team
 import com.jphill.sharedmodels.responses.BasketballTeam
 import com.jphill.sharedmodels.responses.BasketballTeamStats
+import com.jphill.sharedmodels.responses.GameStats
 import com.jphill.sharedmodels.responses.PlayerSeasonStats
 
 fun createPlayerSeasonStats(player: Player): PlayerSeasonStats {
@@ -29,9 +31,10 @@ fun createPlayerSeasonStats(player: Player): PlayerSeasonStats {
     )
 }
 
-fun createBasketballTeam(team: Team) = BasketballTeam(
+fun createBasketballTeam(team: Team, games: List<Game>) = BasketballTeam(
     createBasketballTeamStats(team),
-    team.players.map { (_, player) -> createPlayerSeasonStats(player) }
+    team.players.map { (_, player) -> createPlayerSeasonStats(player) },
+    games.map { createGameStats(it) }
 )
 
 fun createBasketballTeamStats(team: Team) = BasketballTeamStats(
@@ -45,4 +48,13 @@ fun createBasketballTeamStats(team: Team) = BasketballTeamStats(
     team.rawOffEff,
     team.rawDefEff,
     team.rawTempo
+)
+
+fun createGameStats(game: Game) = GameStats(
+    game.id,
+    game.homeTeamName,
+    game.awayTeamName,
+    game.homeTeam.calculateStats(game.id).points,
+    game.awayTeam.calculateStats(game.id).points,
+    game.periods
 )
