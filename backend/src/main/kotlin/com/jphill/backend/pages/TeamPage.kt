@@ -9,20 +9,22 @@ import kotlinx.html.*
 object TeamPage {
 
     fun getTeamPageHTML(name: String): HTML.() -> Unit = {
-        head {
-            link(rel = "stylesheet", href = "/static/main.css")
-        }
-        body {
-            getTeam(name)?.let { team ->
-                createSchedule(team)
-                createRoster(team)
+        createPage(
+            {},
+            {
+                getTeam(name)?.let { team ->
+                    createRow {
+                        createColumn { createSchedule(team) }
+                        createColumn { createRoster(team) }
+                    }
+                }
             }
-        }
+        )
     }
 
     fun getTeamPageJson(name: String) = mapOf("team" to getTeam(name))
 
-    private fun BODY.createSchedule(team: BasketballTeam) {
+    private fun DIV.createSchedule(team: BasketballTeam) {
         table {
             tr {
                 th { +"Home" }
@@ -40,13 +42,13 @@ object TeamPage {
         }
     }
 
-    private fun BODY.createRoster(team: BasketballTeam) {
+    private fun DIV.createRoster(team: BasketballTeam) {
         table {
             tr {
                 th { +"Name" }
                 th { +"Points"}
             }
-            team.players.forEachIndexed { index, player ->
+            team.players.filter { it.name != "TEAM" }.forEachIndexed { index, player ->
                 tr {
                     classes = setOf(if (index % 2 == 0) "even" else "odd")
                     td { +player.name }

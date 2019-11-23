@@ -39,7 +39,7 @@ fun createBasketballTeam(team: Team, games: List<Game>) = BasketballTeam(
 
 fun createBasketballTeamStats(team: Team) = BasketballTeamStats(
     team.id,
-    team.name,
+    getCorrectName(team.name),
     team.getAdjEfficiency(),
     team.adjOffEff,
     team.adjDefEff,
@@ -50,10 +50,18 @@ fun createBasketballTeamStats(team: Team) = BasketballTeamStats(
     team.rawTempo
 )
 
+private fun getCorrectName(name: String): String {
+    return if (name.contains("<")) {
+        name.substringBefore("<")
+    } else {
+        name
+    }
+}
+
 fun createGameStats(game: Game) = GameStats(
     game.id,
-    game.homeTeamName,
-    game.awayTeamName,
+    getCorrectName(game.homeTeamName),
+    getCorrectName(game.awayTeamName),
     game.homeTeam.calculateStats(game.id).points,
     game.awayTeam.calculateStats(game.id).points,
     game.periods

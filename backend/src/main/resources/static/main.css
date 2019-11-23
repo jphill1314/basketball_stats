@@ -1,9 +1,81 @@
+body {
+    padding: 10px;
+    background: #f1f1f1
+}
+
+.mainPage {
+    margin: auto;
+    width: 80%;
+}
+
+.header {
+    padding: 30px;
+    text-align: center;
+    background: white;
+}
+
+.header {
+    font-size: 25px;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
 th {
     text-align: left;
 }
 
 th, td {
-    padding: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table, th, td {
+    border: 0px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.rankHeader {
+    background: #333
+}
+
+.rankHeader a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    text-decoration: none;
+}
+
+.rankHeader a:hover {
+  background-color: #ddd;
+  color: black;
 }
 
 .even {
@@ -12,4 +84,35 @@ th, td {
 
 .odd {
     background: #e3e3e3
+}
+
+.content {
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+
+.column {
+    float: left;
+    width: 47%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.row {
+    width: 100%;
+    margin: auto;
+}
+
+@media screen and (max-width:600px) {
+    .column {
+        width: 100%;
+    }
 }
